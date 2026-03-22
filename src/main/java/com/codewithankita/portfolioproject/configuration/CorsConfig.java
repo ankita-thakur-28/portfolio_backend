@@ -17,7 +17,7 @@ public class CorsConfig {
 
                 registry.addMapping("/**")
                         .allowedOrigins("https://ankita-thakur-28.github.io")
-                        .allowedMethods("GET","POST","PUT","DELETE").
+                        .allowedMethods("GET","POST","PUT","DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(false);
 

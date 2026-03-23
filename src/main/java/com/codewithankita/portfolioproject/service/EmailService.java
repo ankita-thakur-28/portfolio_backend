@@ -1,35 +1,43 @@
 package com.codewithankita.portfolioproject.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.URI;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    @Value("${brevo.api.key}")
+    private String apiKey;
 
     @Value("${app.mail.to}")
     private String toEmail;
 
+    public void sendContactEmail(String name, String senderEmail, String message) {
+        try {
+            String jsonBody = String.format("""
+                {
+                    "sender": {"name": "Portfolio", "email": "a5bc93001@smtp-brevo.com"},
+                    "to": [{"email": "%s"}],
+                    "subject": "Portfolio Contact: %s",
+                    "textContent": "Name: %s\\nEmail: %s\\n\\nMessage: %s"
+                }
+                """, toEmail, name, name, senderEmail, message);
 
-    public void sendContactEmail(String name, String senderEmail, String message ) {
-        SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setFrom("a5bc93001@smtp-brevo.com");
-        mail.setTo(toEmail);
-        mail.setSubject("Portfolio Contact form: " + name);
-        mail.setText("Name: " + name + "\n" +
-                "Email: " + senderEmail + "\n\n" +
-                "Message: " + message
-        );
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.brevo.com/v3/smtp/email"))
+                    .header("api-key", apiKey)
+                    .header("content-type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
 
-        mail.setReplyTo(senderEmail);
-        mailSender.send(mail);
+            HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email: " + e.getMessage());
+        }
     }
-
 }

@@ -14,12 +14,13 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("$app.mail.to")
+    @Value("${app.mail.to}")
     private String toEmail;
 
 
     public void sendContactEmail(String name, String senderEmail, String message ) {
         SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setFrom("a5bc93001@smtp-brevo.com");
         mail.setTo(toEmail);
         mail.setSubject("Portfolio Contact form: " + name);
         mail.setText("Name: " + name + "\n" +
@@ -28,7 +29,6 @@ public class EmailService {
         );
 
         mail.setReplyTo(senderEmail);
-
         mailSender.send(mail);
     }
 

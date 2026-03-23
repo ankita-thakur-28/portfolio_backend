@@ -17,7 +17,7 @@ public class EmailService {
     @Value("$app.mail.to")
     private String toEmail;
 
-    @Async
+
     public void sendContactEmail(String name, String senderEmail, String message ) {
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(toEmail);

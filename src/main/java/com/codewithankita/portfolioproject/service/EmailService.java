@@ -20,7 +20,7 @@ public class EmailService {
         try {
             String jsonBody = String.format("""
                 {
-                    "sender": {"name": "Portfolio", "email": "a5bc93001@smtp-brevo.com"},
+                    "sender": {"name": "Ankita Portfolio", "email": "kumariankitajapan@gmail.com"},
                     "to": [{"email": "%s"}],
                     "subject": "Portfolio Contact: %s",
                     "textContent": "Name: %s\\nEmail: %s\\n\\nMessage: %s"
